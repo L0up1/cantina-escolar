@@ -1,5 +1,6 @@
 package dev.thiago.cantina.service;
 
+import dev.thiago.cantina.dto.CategoriaRequestDTO;
 import dev.thiago.cantina.dto.CategoriaResponseDTO;
 import dev.thiago.cantina.entity.Categoria;
 import dev.thiago.cantina.exception.CategoriaJaExisteException;
@@ -20,13 +21,17 @@ public class CategoriaService {
     }
 
     @Transactional
-    public Categoria salvar(Categoria categoria) {
-        Optional<Categoria> categoriaExistente = categoriaRepository.findByNomeIgnoreCase(categoria.getNome());
+    public CategoriaResponseDTO salvar(CategoriaRequestDTO dto) {
+        Optional<Categoria> categoriaExistente = categoriaRepository.findByNomeIgnoreCase(dto.nome());
 
         if (categoriaExistente.isPresent()) {
-            throw new CategoriaJaExisteException(categoria.getNome());
+            throw new CategoriaJaExisteException(dto.nome());
         }
-        return categoriaRepository.save(categoria);
+        Categoria categoria = CategoriaMapper.toEntity(dto);
+
+        Categoria categoriaSalva = categoriaRepository.save(categoria);
+
+        return CategoriaMapper.toDTO(categoriaSalva);
     }
 
     public List<CategoriaResponseDTO> listar(){
