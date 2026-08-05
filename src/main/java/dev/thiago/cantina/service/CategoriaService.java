@@ -4,6 +4,7 @@ import dev.thiago.cantina.dto.CategoriaRequestDTO;
 import dev.thiago.cantina.dto.CategoriaResponseDTO;
 import dev.thiago.cantina.entity.Categoria;
 import dev.thiago.cantina.exception.CategoriaJaExisteException;
+import dev.thiago.cantina.exception.CategoriaNaoEncontradaException;
 import dev.thiago.cantina.mapper.CategoriaMapper;
 import dev.thiago.cantina.repository.CategoriaRepository;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,32 @@ public class CategoriaService {
     public List<CategoriaResponseDTO> listar(){
         List<Categoria> categorias = categoriaRepository.findAll();
         return categorias.stream().map(CategoriaMapper::toDTO).toList();
+    }
+
+    public void excluirCategoria(Long id){
+        categoriaRepository.deleteById(id);
+    }
+
+    public CategoriaResponseDTO buscarPorId(Long id) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+
+        return CategoriaMapper.toDTO(categoria);
+    }
+
+    @Transactional
+    public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO dto) {
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(() -> new CategoriaNaoEncontradaException(dto.nome()));
+
+        Optional<Categoria> categoriaExistente = categoriaRepository.findByNomeIgnoreCase(dto.nome());
+        if (categoriaExistente.isPresent() && !categoriaExistente.get().getId().equals(id)) {
+            throw new CategoriaJaExisteException(dto.nome());
+        }
+
+        categoria.setNome(dto.nome());
+
+        Categoria categoriaAtualizada = categoriaRepository.save(categoria);
+        return CategoriaMapper.toDTO(categoriaAtualizada);
     }
 }
