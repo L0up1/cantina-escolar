@@ -26,7 +26,8 @@ public class CategoriaService {
         Optional<Categoria> categoriaExistente = categoriaRepository.findByNomeIgnoreCase(dto.nome());
 
         if (categoriaExistente.isPresent()) {
-            throw new CategoriaJaExisteException(dto.nome());
+            throw new CategoriaJaExisteException(
+                    "A categoria '" + dto.nome() + "' já existe");
         }
         Categoria categoria = CategoriaMapper.toEntity(dto);
 
@@ -40,13 +41,13 @@ public class CategoriaService {
         return categorias.stream().map(CategoriaMapper::toDTO).toList();
     }
 
-    public void excluirCategoria(Long id){
+    public void excluir(Long id){
         categoriaRepository.deleteById(id);
     }
 
     public CategoriaResponseDTO buscarPorId(Long id) {
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Categoria não encontrada"));
+                .orElseThrow(() -> new CategoriaNaoEncontradaException("Categoria com ID " + id + " não encontrada."));
 
         return CategoriaMapper.toDTO(categoria);
     }

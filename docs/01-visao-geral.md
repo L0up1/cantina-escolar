@@ -23,7 +23,6 @@ O sistema permitirá registrar compras de forma rápida, consultar o histórico 
 - Spring Boot
 - Spring Data JPA
 - PostgreSQL
-- Thymeleaf
 - Bootstrap 5
 - Maven
 

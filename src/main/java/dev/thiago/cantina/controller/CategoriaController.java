@@ -5,12 +5,12 @@ import dev.thiago.cantina.dto.CategoriaRequestDTO;
 import dev.thiago.cantina.dto.CategoriaResponseDTO;
 import dev.thiago.cantina.service.CategoriaService;
 import jakarta.validation.Valid;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+import java.util.List;
+
+@RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
     private final CategoriaService categoriaService;
@@ -20,57 +20,31 @@ public class CategoriaController {
     }
 
     @GetMapping
-    public String listar(Model model){
-        model.addAttribute("categoria", new CategoriaRequestDTO(""));
-        model.addAttribute("categoriaId", null);
-        model.addAttribute("categorias",categoriaService.listar());
-        return "categorias";
+    public List<CategoriaResponseDTO> listar(){
+        return categoriaService.listar();
     }
 
-    @GetMapping("/editar/{id}")
-    public String editar(@PathVariable Long id, Model model) {
-        CategoriaResponseDTO categoriaResponse = categoriaService.buscarPorId(id);
-
-        CategoriaRequestDTO categoria = new CategoriaRequestDTO(categoriaResponse.nome());
-
-        model.addAttribute("categoria", categoria);
-        model.addAttribute("categoriaId", id);
-        model.addAttribute("categorias", categoriaService.listar());
-        return "categorias";
+    @GetMapping("/{id}")
+    public CategoriaResponseDTO buscarPorId(@PathVariable Long id) {
+        return categoriaService.buscarPorId(id);
     }
 
     @PostMapping
-    public String salvar(
-            @Valid
-            @ModelAttribute CategoriaRequestDTO dto,
-            BindingResult result,
-
-            Model model
-    ) {
-
-        if(result.hasErrors()){
-
-            model.addAttribute("categorias", categoriaService.listar());
-
-            return "categorias";
-        }
-
-        categoriaService.salvar(dto);
-
-        return "redirect:/categorias";
+    @ResponseStatus(HttpStatus.CREATED)
+    public CategoriaResponseDTO salvar(@Valid @RequestBody CategoriaRequestDTO dto) {
+            return categoriaService.salvar(dto);
     }
 
 
     @DeleteMapping("/{id}")
-    public String excluirCategoria(@PathVariable Long id){
-        categoriaService.excluirCategoria(id);
-        return "redirect:/categorias";
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void excluir(@PathVariable Long id){
+        categoriaService.excluir(id);
     }
 
     @PutMapping("/{id}")
-    public String atualizar(@PathVariable Long id, @ModelAttribute CategoriaRequestDTO dto) {
-        categoriaService.atualizar(id, dto);
-        return "redirect:/categorias";
+    public CategoriaResponseDTO atualizar(@PathVariable Long id, @Valid @RequestBody CategoriaRequestDTO dto) {
+        return categoriaService.atualizar(id, dto);
     }
 
 }
