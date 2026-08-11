@@ -4,6 +4,7 @@ import dev.thiago.cantina.dto.ProdutoRequestDTO;
 import dev.thiago.cantina.dto.ProdutoResponseDTO;
 import dev.thiago.cantina.service.ProdutoService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,12 +35,13 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id){
          produtoService.deletar(id);
     }
 
     @PutMapping("/{id}")
-    public ProdutoResponseDTO produtoResponseDTO (@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto){
+    public ProdutoResponseDTO atualizar (@PathVariable Long id, @Valid @RequestBody ProdutoRequestDTO dto){
         return produtoService.atualizar(id, dto);
     }
 }

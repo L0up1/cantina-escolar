@@ -41,8 +41,11 @@ public class CategoriaService {
         return categorias.stream().map(CategoriaMapper::toDTO).toList();
     }
 
+    @Transactional
     public void excluir(Long id){
-        categoriaRepository.deleteById(id);
+        Categoria categoria = categoriaRepository.findById(id)
+                .orElseThrow(()-> new CategoriaNaoEncontradaException("Categoria com ID '" + id + "' não encontrada."));
+        categoriaRepository.delete(categoria);
     }
 
     public CategoriaResponseDTO buscarPorId(Long id) {
@@ -55,7 +58,7 @@ public class CategoriaService {
     @Transactional
     public CategoriaResponseDTO atualizar(Long id, CategoriaRequestDTO dto) {
         Categoria categoria = categoriaRepository.findById(id)
-                .orElseThrow(() -> new CategoriaNaoEncontradaException(dto.nome()));
+                .orElseThrow(() -> new CategoriaNaoEncontradaException( "Categoria com ID '" + id + "' não encontrada."));
 
         Optional<Categoria> categoriaExistente = categoriaRepository.findByNomeIgnoreCase(dto.nome());
         if (categoriaExistente.isPresent() && !categoriaExistente.get().getId().equals(id)) {
