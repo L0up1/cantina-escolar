@@ -1,9 +1,14 @@
 package dev.thiago.cantina.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public record CategoriaRequestDTO(
+        @Schema(
+                description = "Nome da categoria",
+                example = "Doces"
+        )
         @NotBlank(message = "O nome da categoria é obrigatório.")
         @Size(
                 min = 3,
