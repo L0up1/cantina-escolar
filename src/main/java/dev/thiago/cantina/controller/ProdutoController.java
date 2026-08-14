@@ -95,12 +95,12 @@ public class ProdutoController {
     }
 
     @Operation(
-            summary = "Busca um produto pelo ID",
-            description = "Retorna os dados de um produto específico."
+            summary = "Exclui um produto pelo ID",
+            description = "Exclui um produto que não esteja vinculado a vendas."
     )
     @ApiResponse(
-            responseCode = "200",
-            description = "Produto encontrado com sucesso."
+            responseCode = "204",
+            description = "Produto excluído com sucesso."
     )
     @ApiResponse(
             responseCode = "404",
@@ -110,7 +110,6 @@ public class ProdutoController {
                     schema = @Schema(implementation = ErroResponseDTO.class)
             )
     )
-
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletar(@PathVariable Long id){
