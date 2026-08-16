@@ -1,7 +1,7 @@
 package dev.thiago.cantina.mapper;
 
-import dev.thiago.cantina.dto.ProdutoRequestDTO;
-import dev.thiago.cantina.dto.ProdutoResponseDTO;
+import dev.thiago.cantina.dto.produto.ProdutoRequestDTO;
+import dev.thiago.cantina.dto.produto.ProdutoResponseDTO;
 import dev.thiago.cantina.entity.Produto;
 
 public class ProdutoMapper {

@@ -1,4 +1,4 @@
-package dev.thiago.cantina.dto;
+package dev.thiago.cantina.dto.produto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 

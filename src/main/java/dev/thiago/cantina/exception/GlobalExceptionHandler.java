@@ -124,5 +124,20 @@ public class GlobalExceptionHandler {
                 .body(erro);
     }
 
+    @ExceptionHandler(PeriodoInvalidoException.class)
+    public ResponseEntity<ErroResponseDTO> tratarPeriodoInvalido(
+            PeriodoInvalidoException ex
+    ) {
+        ErroResponseDTO erro = new ErroResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(erro);
+    }
+
     }
 

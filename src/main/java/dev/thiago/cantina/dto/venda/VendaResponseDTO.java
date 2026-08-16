@@ -1,4 +1,6 @@
-package dev.thiago.cantina.dto;
+package dev.thiago.cantina.dto.venda;
+
+import dev.thiago.cantina.dto.item_venda.ItemVendaResponseDTO;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

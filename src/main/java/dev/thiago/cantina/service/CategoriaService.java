@@ -1,7 +1,7 @@
 package dev.thiago.cantina.service;
 
-import dev.thiago.cantina.dto.CategoriaRequestDTO;
-import dev.thiago.cantina.dto.CategoriaResponseDTO;
+import dev.thiago.cantina.dto.categoria.CategoriaRequestDTO;
+import dev.thiago.cantina.dto.categoria.CategoriaResponseDTO;
 import dev.thiago.cantina.entity.Categoria;
 import dev.thiago.cantina.exception.CategoriaJaExisteException;
 import dev.thiago.cantina.exception.CategoriaNaoEncontradaException;

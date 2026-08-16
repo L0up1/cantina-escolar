@@ -1,5 +1,6 @@
-package dev.thiago.cantina.dto;
+package dev.thiago.cantina.dto.venda;
 
+import dev.thiago.cantina.dto.item_venda.ItemVendaRequestDTO;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 

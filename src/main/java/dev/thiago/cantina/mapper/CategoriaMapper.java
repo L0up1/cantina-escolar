@@ -1,7 +1,7 @@
 package dev.thiago.cantina.mapper;
 
-import dev.thiago.cantina.dto.CategoriaRequestDTO;
-import dev.thiago.cantina.dto.CategoriaResponseDTO;
+import dev.thiago.cantina.dto.categoria.CategoriaRequestDTO;
+import dev.thiago.cantina.dto.categoria.CategoriaResponseDTO;
 import dev.thiago.cantina.entity.Categoria;
 
 public final class CategoriaMapper {

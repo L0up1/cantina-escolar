@@ -1,4 +1,4 @@
-package dev.thiago.cantina.dto;
+package dev.thiago.cantina.dto.item_venda;
 
 import java.math.BigDecimal;
 

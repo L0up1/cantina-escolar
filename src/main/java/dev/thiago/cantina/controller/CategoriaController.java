@@ -1,8 +1,8 @@
 package dev.thiago.cantina.controller;
 
 
-import dev.thiago.cantina.dto.CategoriaRequestDTO;
-import dev.thiago.cantina.dto.CategoriaResponseDTO;
+import dev.thiago.cantina.dto.categoria.CategoriaRequestDTO;
+import dev.thiago.cantina.dto.categoria.CategoriaResponseDTO;
 import dev.thiago.cantina.dto.ErroResponseDTO;
 import dev.thiago.cantina.service.CategoriaService;
 import io.swagger.v3.oas.annotations.Operation;

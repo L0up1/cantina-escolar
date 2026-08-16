@@ -1,7 +1,6 @@
 package dev.thiago.cantina.mapper;
 
-import dev.thiago.cantina.dto.ItemVendaResponseDTO;
-import dev.thiago.cantina.dto.VendaResponseDTO;
+import dev.thiago.cantina.dto.venda.VendaResponseDTO;
 import dev.thiago.cantina.entity.Venda;
 
 public class VendaMapper {

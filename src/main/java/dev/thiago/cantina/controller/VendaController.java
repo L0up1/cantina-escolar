@@ -1,8 +1,8 @@
 package dev.thiago.cantina.controller;
 
 import dev.thiago.cantina.dto.ErroResponseDTO;
-import dev.thiago.cantina.dto.VendaRequestDTO;
-import dev.thiago.cantina.dto.VendaResponseDTO;
+import dev.thiago.cantina.dto.venda.VendaRequestDTO;
+import dev.thiago.cantina.dto.venda.VendaResponseDTO;
 import dev.thiago.cantina.service.VendaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -12,6 +12,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -72,6 +73,15 @@ public class VendaController {
                     schema = @Schema(implementation = ErroResponseDTO.class)
             )
     )
+
+
+    @GetMapping("/periodo")
+    public List<VendaResponseDTO> listarTodosEntrePeriodo(
+            @RequestParam LocalDate inicio,
+            @RequestParam LocalDate fim) {
+        return vendaService.listarTodosEntrePeriodo(inicio, fim);
+    }
+
     @GetMapping("/{id}")
     public VendaResponseDTO buscarPorId(@PathVariable Long id) {
         return vendaService.buscarPorId(id);
@@ -111,4 +121,6 @@ public class VendaController {
     public void deletar(@PathVariable Long id) {
         vendaService.deletar(id);
     }
+
+
 }

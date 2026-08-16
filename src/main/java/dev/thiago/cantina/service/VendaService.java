@@ -1,12 +1,12 @@
 package dev.thiago.cantina.service;
 
-import dev.thiago.cantina.dto.ItemVendaRequestDTO;
-import dev.thiago.cantina.dto.ItemVendaResponseDTO;
-import dev.thiago.cantina.dto.VendaRequestDTO;
-import dev.thiago.cantina.dto.VendaResponseDTO;
+import dev.thiago.cantina.dto.item_venda.ItemVendaRequestDTO;
+import dev.thiago.cantina.dto.venda.VendaRequestDTO;
+import dev.thiago.cantina.dto.venda.VendaResponseDTO;
 import dev.thiago.cantina.entity.ItemVenda;
 import dev.thiago.cantina.entity.Produto;
 import dev.thiago.cantina.entity.Venda;
+import dev.thiago.cantina.exception.PeriodoInvalidoException;
 import dev.thiago.cantina.exception.ProdutoNaoEncontradoException;
 import dev.thiago.cantina.exception.VendaNaoEncontradaException;
 import dev.thiago.cantina.mapper.VendaMapper;
@@ -14,9 +14,10 @@ import dev.thiago.cantina.repository.ProdutoRepository;
 import dev.thiago.cantina.repository.VendaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -84,5 +85,17 @@ public class VendaService {
         Venda venda = vendaRepository.findById(id)
                 .orElseThrow(() -> new VendaNaoEncontradaException("Venda com ID '" + id + "' não encontrada"));
         vendaRepository.delete(venda);
+    }
+
+    @Transactional(readOnly = true)
+    public List<VendaResponseDTO> listarTodosEntrePeriodo(LocalDate inicio, LocalDate fim) {
+        if (fim.isBefore(inicio)) {
+            throw new PeriodoInvalidoException(
+                    "A data final não pode ser anterior à data inicial."
+            );
+        }
+        List<Venda> vendasFiltradas = vendaRepository.findByDataHoraBetween(inicio.atStartOfDay(),fim.atTime(LocalTime.MAX));
+        return vendasFiltradas.stream().map(VendaMapper::toDTO).toList();
+
     }
  }

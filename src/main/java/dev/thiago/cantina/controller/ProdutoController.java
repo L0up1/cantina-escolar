@@ -1,8 +1,8 @@
 package dev.thiago.cantina.controller;
 
 import dev.thiago.cantina.dto.ErroResponseDTO;
-import dev.thiago.cantina.dto.ProdutoRequestDTO;
-import dev.thiago.cantina.dto.ProdutoResponseDTO;
+import dev.thiago.cantina.dto.produto.ProdutoRequestDTO;
+import dev.thiago.cantina.dto.produto.ProdutoResponseDTO;
 import dev.thiago.cantina.service.ProdutoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
