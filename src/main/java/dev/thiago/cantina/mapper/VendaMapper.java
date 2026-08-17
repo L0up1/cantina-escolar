@@ -10,9 +10,12 @@ public class VendaMapper {
                 venda.getId(),
                 venda.getDataHora(),
                 venda.getValorTotal(),
+                venda.getAluno() != null ? venda.getAluno().getId() : null,
                 venda.getItens()
                         .stream().map(ItemVendaMapper::toDTO)
-                        .toList()
+                        .toList(),
+                venda.getFormaPagamento(),
+                venda.getStatusPagamento()
         );
     }
 }

@@ -1,5 +1,8 @@
 package dev.thiago.cantina.entity;
 
+import dev.thiago.cantina.enums.FormaPagamento;
+import dev.thiago.cantina.enums.StatusPagamento;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +23,13 @@ public class Venda {
     private Long id;
     private LocalDateTime dataHora;
     private BigDecimal valorTotal;
+    @ManyToOne
+    @JoinColumn(name = "aluno_id")
+    private Aluno aluno;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private StatusPagamento statusPagamento;
     @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    private FormaPagamento formaPagamento;
     private List<ItemVenda> itens;
 }

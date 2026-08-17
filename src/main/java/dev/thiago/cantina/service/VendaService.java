@@ -3,13 +3,14 @@ package dev.thiago.cantina.service;
 import dev.thiago.cantina.dto.item_venda.ItemVendaRequestDTO;
 import dev.thiago.cantina.dto.venda.VendaRequestDTO;
 import dev.thiago.cantina.dto.venda.VendaResponseDTO;
+import dev.thiago.cantina.entity.Aluno;
 import dev.thiago.cantina.entity.ItemVenda;
 import dev.thiago.cantina.entity.Produto;
 import dev.thiago.cantina.entity.Venda;
-import dev.thiago.cantina.exception.PeriodoInvalidoException;
-import dev.thiago.cantina.exception.ProdutoNaoEncontradoException;
-import dev.thiago.cantina.exception.VendaNaoEncontradaException;
+import dev.thiago.cantina.enums.StatusPagamento;
+import dev.thiago.cantina.exception.*;
 import dev.thiago.cantina.mapper.VendaMapper;
+import dev.thiago.cantina.repository.AlunoRepository;
 import dev.thiago.cantina.repository.ProdutoRepository;
 import dev.thiago.cantina.repository.VendaRepository;
 import org.springframework.stereotype.Service;
@@ -26,18 +27,35 @@ public class VendaService {
 
     private final VendaRepository vendaRepository;
     private final ProdutoRepository produtoRepository;
+    private final AlunoRepository alunoRepository;
 
-    public VendaService(VendaRepository vendaRepository, ProdutoRepository produtoRepository) {
+    public VendaService(VendaRepository vendaRepository, ProdutoRepository produtoRepository, AlunoRepository alunoRepository) {
         this.vendaRepository = vendaRepository;
         this.produtoRepository = produtoRepository;
+        this.alunoRepository = alunoRepository;
     }
 
     @Transactional
     public VendaResponseDTO salvar(VendaRequestDTO dto) {
+        Aluno aluno = null;
+
+        if (dto.alunoId() != null) {
+            aluno = alunoRepository.findById(dto.alunoId())
+                    .orElseThrow(() -> new AlunoNaoEncontradoException("Aluno com ID '" + dto.alunoId() + "' não encontrado."));
+        }
+
         Venda venda = new Venda();
 
+
         venda.setDataHora(LocalDateTime.now());
+        venda.setAluno(aluno);
+        venda.setStatusPagamento(dto.statusPagamento());
+        venda.setFormaPagamento(dto.formaPagamento());
         venda.setItens(new ArrayList<>());
+
+        if (StatusPagamento.PENDENTE.equals(dto.statusPagamento()) && dto.alunoId() == null) {
+            throw new VendaInvalidaException("Uma venda pendente deve ter um aluno.");
+        }
 
         for (ItemVendaRequestDTO itemDTO:dto.itens()){
             Produto produto = produtoRepository.findById(itemDTO.produtoId())

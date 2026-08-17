@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "alunos")
 @Getter
@@ -20,4 +23,6 @@ public class Aluno {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Turma turma;
+    @OneToMany(mappedBy = "aluno")
+    private List<Venda> vendas = new ArrayList<>();
 }
