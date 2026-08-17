@@ -22,7 +22,7 @@ public class AlunoService {
     }
 
     public AlunoResponseDTO salvar(AlunoRequestDTO dto) {
-        Optional<Aluno> alunoExistente = alunoRepository.findByAlunoIgnoreCaseAndTurma(dto.nome(), dto.turma());
+        Optional<Aluno> alunoExistente = alunoRepository.findByNomeIgnoreCaseAndTurma(dto.nome(), dto.turma());
 
         if (alunoExistente.isPresent()) {
             throw new AlunoExistenteException("Já existe um aluno com o nome '" + dto.nome() + "' na turma selecionada.");
@@ -55,7 +55,7 @@ public class AlunoService {
         Aluno aluno = alunoRepository.findById(id)
                 .orElseThrow(() -> new AlunoNaoEncontradoException("Aluno com ID '" + id + "' não encontrado."));
 
-        Optional<Aluno> alunoExistente = alunoRepository.findByAlunoIgnoreCaseAndTurma(dto.nome(), dto.turma());
+        Optional<Aluno> alunoExistente = alunoRepository.findByNomeIgnoreCaseAndTurma(dto.nome(), dto.turma());
 
         if (alunoExistente.isPresent() && !alunoExistente.get().getId().equals(id)) {
             throw new AlunoExistenteException("Já existe um aluno com o nome '" + dto.nome() + "' na turma selecionada.");

@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface AlunoRepository extends JpaRepository<Aluno, Long> {
-    Optional<Aluno> findByAlunoIgnoreCaseAndTurma(String nome, Turma turma);
+    Optional<Aluno> findByNomeIgnoreCaseAndTurma(String nome, Turma turma);
 }

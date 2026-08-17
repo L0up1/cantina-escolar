@@ -42,6 +42,14 @@ public class CategoriaController {
             summary = "Busca uma categoria pelo ID",
             description = "Retorna os dados de uma categoria específica."
     )
+    @ApiResponse(
+            responseCode = "404",
+            description = "Categoria não encontrada.",
+            content = @Content(
+                    mediaType = "application/json",
+                    schema = @Schema(implementation = ErroResponseDTO.class)
+            )
+    )
     @GetMapping("/{id}")
     public CategoriaResponseDTO buscarPorId(@PathVariable Long id) {
         return categoriaService.buscarPorId(id);

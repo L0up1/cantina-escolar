@@ -1,9 +1,11 @@
 package dev.thiago.cantina.exception;
 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import dev.thiago.cantina.dto.ErroResponseDTO;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -132,6 +134,60 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
                 ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(erro);
+    }
+
+    @ExceptionHandler(AlunoNaoEncontradoException.class)
+    public ResponseEntity<ErroResponseDTO> tratarAlunoNaoEncontrado(
+            AlunoNaoEncontradoException ex
+    ) {
+        ErroResponseDTO erro = new ErroResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(erro);
+    }
+
+    @ExceptionHandler(AlunoExistenteException.class)
+    public ResponseEntity<ErroResponseDTO> tratarAlunoNaoEncontrado(
+            AlunoExistenteException ex
+    ) {
+        ErroResponseDTO erro = new ErroResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(erro);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErroResponseDTO> tratarErroDeLeitura(
+            HttpMessageNotReadableException ex
+    ) {
+        String mensagem = "Dados enviados em formato inválido.";
+
+        if (ex.getCause() instanceof InvalidFormatException invalidFormatException) {
+
+            mensagem = "Valor inválido informado para o campo '"
+                    + invalidFormatException.getPath().get(0).getFieldName()
+                    + "'.";
+        }
+
+        ErroResponseDTO erro = new ErroResponseDTO(
+                LocalDateTime.now(),
+                HttpStatus.BAD_REQUEST.value(),
+                mensagem
         );
 
         return ResponseEntity
