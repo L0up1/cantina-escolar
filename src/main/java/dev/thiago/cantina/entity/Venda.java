@@ -29,7 +29,12 @@ public class Venda {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusPagamento statusPagamento;
-    @OneToMany(mappedBy = "venda", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true)
     private FormaPagamento formaPagamento;
+    @OneToMany(
+            mappedBy = "venda",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<ItemVenda> itens;
 }

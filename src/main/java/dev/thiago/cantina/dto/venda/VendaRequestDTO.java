@@ -5,6 +5,7 @@ import dev.thiago.cantina.enums.FormaPagamento;
 import dev.thiago.cantina.enums.StatusPagamento;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ public record VendaRequestDTO(
         List<ItemVendaRequestDTO> itens,
         Long alunoId,
         FormaPagamento formaPagamento,
+        @NotNull(message = "O status de pagamento é obrigatório.")
         StatusPagamento statusPagamento
 ) {
 }

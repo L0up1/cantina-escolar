@@ -7,6 +7,7 @@ import dev.thiago.cantina.entity.Aluno;
 import dev.thiago.cantina.entity.ItemVenda;
 import dev.thiago.cantina.entity.Produto;
 import dev.thiago.cantina.entity.Venda;
+import dev.thiago.cantina.enums.FormaPagamento;
 import dev.thiago.cantina.enums.StatusPagamento;
 import dev.thiago.cantina.exception.*;
 import dev.thiago.cantina.mapper.VendaMapper;
@@ -37,6 +38,19 @@ public class VendaService {
 
     @Transactional
     public VendaResponseDTO salvar(VendaRequestDTO dto) {
+
+        if (StatusPagamento.PENDENTE.equals(dto.statusPagamento()) && dto.alunoId() == null) {
+            throw new VendaInvalidaException("Uma venda pendente deve ter um aluno.");
+        }
+
+        if (StatusPagamento.PENDENTE.equals(dto.statusPagamento()) && dto.formaPagamento() != null) {
+           throw new VendaInvalidaException("Uma venda pendente não pode possuir forma de pagamento.");
+        }
+
+        if (StatusPagamento.PAGO.equals(dto.statusPagamento()) && dto.formaPagamento() == null) {
+            throw new VendaInvalidaException("Uma venda paga precisa possuir uma forma de pagamento.");
+        }
+
         Aluno aluno = null;
 
         if (dto.alunoId() != null) {
@@ -46,16 +60,11 @@ public class VendaService {
 
         Venda venda = new Venda();
 
-
         venda.setDataHora(LocalDateTime.now());
         venda.setAluno(aluno);
         venda.setStatusPagamento(dto.statusPagamento());
         venda.setFormaPagamento(dto.formaPagamento());
         venda.setItens(new ArrayList<>());
-
-        if (StatusPagamento.PENDENTE.equals(dto.statusPagamento()) && dto.alunoId() == null) {
-            throw new VendaInvalidaException("Uma venda pendente deve ter um aluno.");
-        }
 
         for (ItemVendaRequestDTO itemDTO:dto.itens()){
             Produto produto = produtoRepository.findById(itemDTO.produtoId())
