@@ -1,17 +1,17 @@
 package dev.thiago.cantina.service;
 
 import dev.thiago.cantina.dto.item_venda.ItemVendaRequestDTO;
-import dev.thiago.cantina.dto.venda.VendaRequestDTO;
-import dev.thiago.cantina.dto.venda.VendaResponseDTO;
+import dev.thiago.cantina.dto.produto.ProdutoMaisVendidoResponseDTO;
+import dev.thiago.cantina.dto.venda.*;
 import dev.thiago.cantina.entity.Aluno;
 import dev.thiago.cantina.entity.ItemVenda;
 import dev.thiago.cantina.entity.Produto;
 import dev.thiago.cantina.entity.Venda;
-import dev.thiago.cantina.enums.FormaPagamento;
 import dev.thiago.cantina.enums.StatusPagamento;
 import dev.thiago.cantina.exception.*;
 import dev.thiago.cantina.mapper.VendaMapper;
 import dev.thiago.cantina.repository.AlunoRepository;
+import dev.thiago.cantina.repository.ItemVendaRepository;
 import dev.thiago.cantina.repository.ProdutoRepository;
 import dev.thiago.cantina.repository.VendaRepository;
 import org.springframework.stereotype.Service;
@@ -29,11 +29,13 @@ public class VendaService {
     private final VendaRepository vendaRepository;
     private final ProdutoRepository produtoRepository;
     private final AlunoRepository alunoRepository;
+    private final ItemVendaRepository itemVendaRepository;
 
-    public VendaService(VendaRepository vendaRepository, ProdutoRepository produtoRepository, AlunoRepository alunoRepository) {
+    public VendaService(VendaRepository vendaRepository, ProdutoRepository produtoRepository, AlunoRepository alunoRepository, ItemVendaRepository itemVendaRepository) {
         this.vendaRepository = vendaRepository;
         this.produtoRepository = produtoRepository;
         this.alunoRepository = alunoRepository;
+        this.itemVendaRepository = itemVendaRepository;
     }
 
     @Transactional
@@ -124,5 +126,46 @@ public class VendaService {
         List<Venda> vendasFiltradas = vendaRepository.findByDataHoraBetween(inicio.atStartOfDay(),fim.atTime(LocalTime.MAX));
         return vendasFiltradas.stream().map(VendaMapper::toDTO).toList();
 
+    }
+
+    @Transactional(readOnly = true)
+    public List<VendaResponseDTO> listarVendasPendentesPorId(Long id){
+        Aluno aluno = alunoRepository.findById(id)
+                .orElseThrow(() -> new AlunoNaoEncontradoException("Aluno com ID '" + id + "' não encontrado."));
+        List<Venda> vendasPendentes = vendaRepository.findByAlunoIdAndStatusPagamento(id, StatusPagamento.PENDENTE);
+        return vendasPendentes.stream().map(VendaMapper::toDTO).toList();
+    }
+
+    @Transactional
+    public List<VendaResponseDTO> atualizarPagamento(Long id, PagamentoVendaRequestDTO dto) {
+        Aluno aluno = alunoRepository.findById(id)
+                .orElseThrow(() -> new AlunoNaoEncontradoException("Aluno com ID '" + id + "' não encontrado."));
+        List<Venda> vendasPendentes = vendaRepository.findByAlunoIdAndStatusPagamento(id, StatusPagamento.PENDENTE);
+        if (vendasPendentes.isEmpty()){
+            throw new VendaInvalidaException("O aluno não possui vendas pendentes.");
+        }
+        for (Venda venda : vendasPendentes){
+            venda.setStatusPagamento(StatusPagamento.PAGO);
+            venda.setFormaPagamento(dto.formaPagamento());
+        }
+
+        vendaRepository.saveAll(vendasPendentes);
+
+        return vendasPendentes.stream().map(VendaMapper::toDTO).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public VendaResumoResponseDTO buscarResusmo(LocalDate inicio, LocalDate fim) {
+        return vendaRepository.buscarResumo(inicio.atStartOfDay(), fim.plusDays(1).atStartOfDay());
+    }
+
+    @Transactional(readOnly = true)
+    public VendaPorPagamentoResponseDTO resumoPorPagamento(LocalDate inicio, LocalDate fim){
+        return vendaRepository.buscarPorFormaPagamento(inicio.atStartOfDay(), fim.plusDays(1).atStartOfDay());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProdutoMaisVendidoResponseDTO> produtoMaisVendido(LocalDate inicio, LocalDate fim) {
+        return itemVendaRepository.produtoMaisVendido(inicio.atStartOfDay(), fim.plusDays(1).atStartOfDay());
     }
  }

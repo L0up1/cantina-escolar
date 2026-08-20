@@ -12,7 +12,7 @@ public record VendaResponseDTO(
         Long id,
         LocalDateTime dataHora,
         BigDecimal valorTotal,
-        Long aluno_id,
+        Long alunoId,
         List<ItemVendaResponseDTO> itens,
         FormaPagamento formaPagamento,
         StatusPagamento statusPagamento
