@@ -84,16 +84,16 @@ public class VendaController {
 
     @GetMapping("/{id}")
     @Operation(
-            summary = "Lista todas as vendas realizadas pelo aluno.",
-            description = "Retorna todas as vendas feitas pelo aluno."
+            summary = "Busca uma venda pelo ID.",
+            description = "Retorna os dados de uma venda específica."
     )
     @ApiResponse(
             responseCode = "200",
-            description = "Vendas encontradas com sucesso."
+            description = "Venda encontrada com sucesso."
     )
     @ApiResponse(
             responseCode = "404",
-            description = "Aluno não encontrado.",
+            description = "Venda não encontrada.",
             content = @Content(
                     mediaType = "application/json",
                     schema = @Schema(implementation = ErroResponseDTO.class)

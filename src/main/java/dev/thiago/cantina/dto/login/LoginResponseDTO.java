@@ -1,4 +1,10 @@
 package dev.thiago.cantina.dto.login;
 
-public record LoginResponseDTO() {
+import dev.thiago.cantina.enums.Cargo;
+
+public record LoginResponseDTO(
+        String token,
+        String nome,
+        Cargo cargo
+) {
 }
