@@ -157,7 +157,7 @@ public class VendaController {
         return vendaService.listarVendasPendentesPorId(id);
     }
 
-    @PutMapping("/{id}/pagar")
+    @PutMapping("/alunos/{alunoId}/pagamentos")
     @Operation(
             summary = "Realiza o pagamento das vendas pendentes de um aluno.",
             description = "Altera todas as vendas pendentes do aluno para PAGO e registra a forma de pagamento."
@@ -182,9 +182,13 @@ public class VendaController {
                     schema = @Schema(implementation = ErroResponseDTO.class)
             )
     )
-    public List<VendaResponseDTO> atualizarPagamento(@PathVariable Long id, @RequestBody @Valid PagamentoVendaRequestDTO dto) {
-        return vendaService.atualizarPagamento(id, dto);
-    }
+
+public List<VendaResponseDTO> atualizarPagamento(
+        @PathVariable Long alunoId,
+        @RequestBody @Valid PagamentoVendaRequestDTO dto
+) {
+    return vendaService.atualizarPagamento(alunoId, dto);
+}
 
     @GetMapping("/resumo")
     @Operation(

@@ -3,6 +3,7 @@ package dev.thiago.cantina.controller;
 import dev.thiago.cantina.dto.login.LoginRequestDTO;
 import dev.thiago.cantina.dto.login.LoginResponseDTO;
 import dev.thiago.cantina.service.UsuarioService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,11 @@ public class AuthController {
 
     private final UsuarioService usuarioService;
 
+    @Operation(
+            summary = "Realizar login",
+            description = "Autentica um usuário e retorna um token JWT.",
+            security = {}
+    )
     @PostMapping("/login")
     public LoginResponseDTO login(@RequestBody LoginRequestDTO dto) {
         return usuarioService.autenticar(dto);

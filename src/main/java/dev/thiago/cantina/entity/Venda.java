@@ -1,8 +1,6 @@
 package dev.thiago.cantina.entity;
 
-import dev.thiago.cantina.enums.FormaPagamento;
 import dev.thiago.cantina.enums.StatusPagamento;
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,9 +27,12 @@ public class Venda {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private StatusPagamento statusPagamento;
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = true)
-    private FormaPagamento formaPagamento;
+    @OneToMany(
+            mappedBy = "venda",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<Pagamento> pagamentos;
     @OneToMany(
             mappedBy = "venda",
             cascade = CascadeType.ALL,

@@ -1,6 +1,7 @@
 package dev.thiago.cantina.dto.venda;
 
 import dev.thiago.cantina.dto.item_venda.ItemVendaResponseDTO;
+import dev.thiago.cantina.dto.pagamento.PagamentoResponseDTO;
 import dev.thiago.cantina.enums.FormaPagamento;
 import dev.thiago.cantina.enums.StatusPagamento;
 
@@ -12,9 +13,11 @@ public record VendaResponseDTO(
         Long id,
         LocalDateTime dataHora,
         BigDecimal valorTotal,
+        BigDecimal valorPago,
+        BigDecimal valorPendente,
         Long alunoId,
         List<ItemVendaResponseDTO> itens,
-        FormaPagamento formaPagamento,
+        List<PagamentoResponseDTO> pagamentos,
         StatusPagamento statusPagamento
 ) {
 }

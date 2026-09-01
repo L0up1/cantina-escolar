@@ -21,12 +21,15 @@ public class JwtService {
     @Value("${jwt.secret}")
     private String secret;
 
+    @Value("${jwt.expiration}")
+    private long expiration;
+
     public String gerarToken(Usuario usuario){
         return Jwts.builder()
                 .subject(usuario.getLogin())
                 .claim("cargo", usuario.getCargo().name())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 86400000))
+                .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSigningKey())
                 .compact();
     }

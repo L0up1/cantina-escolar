@@ -1,10 +1,15 @@
 package dev.thiago.cantina.dto.venda;
 
-import dev.thiago.cantina.enums.FormaPagamento;
-import jakarta.validation.constraints.NotNull;
+import dev.thiago.cantina.dto.pagamento.PagamentoRequestDTO;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+
+
+import java.util.List;
 
 public record PagamentoVendaRequestDTO(
-        @NotNull(message = "A forma de pagamento é obrigatória.")
-        FormaPagamento formaPagamento
+        @NotEmpty(message = "Informe pelo menos um pagamento.")
+        @Valid
+        List<PagamentoRequestDTO> pagamentos
 ) {
 }
