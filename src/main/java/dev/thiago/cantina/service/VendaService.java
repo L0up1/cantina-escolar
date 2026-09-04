@@ -10,6 +10,9 @@ import dev.thiago.cantina.enums.StatusPagamento;
 import dev.thiago.cantina.exception.*;
 import dev.thiago.cantina.mapper.VendaMapper;
 import dev.thiago.cantina.repository.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
@@ -122,9 +125,17 @@ public class VendaService {
     }
 
     @Transactional(readOnly = true)
-    public List<VendaResponseDTO> listar() {
-        List<Venda> vendas = vendaRepository.findAll();
-        return vendas.stream().map(VendaMapper::toDTO).toList();
+    public Page<VendaResponseDTO> listarTodos(int page, int size) {
+
+        PageRequest pageRequest = PageRequest.of(
+                page,
+                size,
+                Sort.by("dataHora").descending()
+        );
+
+        Page<Venda> vendas = vendaRepository.findAll(pageRequest);
+
+        return vendas.map(VendaMapper::toDTO);
     }
 
     @Transactional(readOnly = true)
@@ -142,14 +153,15 @@ public class VendaService {
     }
 
     @Transactional(readOnly = true)
-    public List<VendaResponseDTO> listarTodosEntrePeriodo(LocalDate inicio, LocalDate fim) {
+    public Page<VendaResponseDTO> listarTodosEntrePeriodo(LocalDate inicio, LocalDate fim, int page, int size) {
         if (fim.isBefore(inicio)) {
             throw new PeriodoInvalidoException(
                     "A data final não pode ser anterior à data inicial."
             );
         }
-        List<Venda> vendasFiltradas = vendaRepository.findByDataHoraBetween(inicio.atStartOfDay(),fim.atTime(LocalTime.MAX));
-        return vendasFiltradas.stream().map(VendaMapper::toDTO).toList();
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("dataHora").descending());
+        Page<Venda> vendasFiltradas = vendaRepository.findByDataHoraBetween(inicio.atStartOfDay(),fim.atTime(LocalTime.MAX), pageRequest);
+        return vendasFiltradas.map(VendaMapper::toDTO);
 
     }
 

@@ -10,6 +10,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -76,10 +78,12 @@ public class VendaController {
             responseCode = "400",
             description = "A data final não pode ser anterior a data final."
     )
-    public List<VendaResponseDTO> listarTodosEntrePeriodo(
+    public Page<VendaResponseDTO> listarTodosEntrePeriodo(
             @RequestParam LocalDate inicio,
-            @RequestParam LocalDate fim) {
-        return vendaService.listarTodosEntrePeriodo(inicio, fim);
+            @RequestParam LocalDate fim,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20")int size) {
+        return vendaService.listarTodosEntrePeriodo(inicio, fim, page, size);
     }
 
     @GetMapping("/{id}")
@@ -111,8 +115,10 @@ public class VendaController {
             description = "Vendas encontradas com sucesso."
     )
     @GetMapping
-    public List<VendaResponseDTO> listar(){
-        return vendaService.listar();
+    public Page<VendaResponseDTO> listar(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "20") int size){
+        return vendaService.listarTodos(page, size);
     }
 
     @Operation(
